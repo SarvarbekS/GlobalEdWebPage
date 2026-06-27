@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="SaytUzGlobalEd" remoteFilesAllowedToDisappearOnAutoupload="false">
+    <serverData>
+      <paths name="SaytUzGlobalEd">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="./.venv" />
+            <excludedPath local="true" path="/env" />
+            <excludedPath path="~/.venv" />
+            <excludedPath local="true" path="/.env" />
+            <excludedPath path="/globaled.uz/.venv" />
+            <excludedPath path="/var/www/s0118/data/www/globaled.uz/.venv/" />
+            <excludedPath path="/www/globaled.uz/.venv" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

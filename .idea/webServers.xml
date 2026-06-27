@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="c7ee0eb8-a54a-4970-a231-ed6194f48ca4" name="SaytUzGlobalEd">
+        <fileTransfer rootFolder="/var/www/s0118/data/www/globaled.uz" accessType="SFTP" host="ns8.sayt.uz" port="22" sshConfigId="bb68cb71-9c01-4cbf-8a7b-08600dd03f4a" sshConfig="s0118@ns8.sayt.uz:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
