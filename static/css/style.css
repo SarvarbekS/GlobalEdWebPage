@@ -3077,10 +3077,6 @@ a {
     animation: universityLogoScroll 36s linear infinite;
 }
 
-.university-logo-marquee:hover .university-logo-track {
-    animation-play-state: paused;
-}
-
 .university-logo-item {
     flex: 0 0 auto;
     width: 240px;
