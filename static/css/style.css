@@ -4143,3 +4143,48 @@ a {
     }
 }
 
+.nav-translate {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 12px;
+}
+
+#google_translate_element {
+  display: inline-flex;
+  align-items: center;
+}
+
+.goog-te-gadget {
+  font-family: var(--font-body) !important;
+  font-size: 0 !important;
+  color: transparent !important;
+}
+
+.goog-te-combo {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(22, 50, 74, 0.12);
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--primary-dark);
+  font-family: var(--font-body);
+  font-size: 0.92rem !important;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+}
+
+.goog-logo-link,
+.goog-te-gadget span {
+  display: none !important;
+}
+
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+
+body {
+  top: 0 !important;
+}
+
+
