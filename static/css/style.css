@@ -1560,6 +1560,64 @@ a {
   background: #fff;
 }
 
+.result-modal-image {
+  transition: transform 0.25s ease;
+  cursor: zoom-in;
+}
+
+.result-modal-zoom-controls {
+  position: absolute;
+  bottom: -56px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 999px;
+  padding: 8px 12px;
+  box-shadow: 0 10px 24px rgba(18, 52, 77, 0.2);
+}
+
+.result-zoom-btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(29, 111, 163, 0.08);
+  color: var(--primary-dark);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+}
+
+.result-zoom-btn:hover:not(:disabled) {
+  background: rgba(29, 111, 163, 0.16);
+  transform: translateY(-1px);
+}
+
+.result-zoom-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+#zoomResetBtn {
+  background: transparent;
+  cursor: default;
+  min-width: 52px;
+  font-size: 0.85rem;
+}
+
+#zoomResetBtn:hover {
+  transform: none;
+  background: transparent;
+}
+
 /* â”€â”€â”€ Countries Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .countries-section {
     overflow: visible;

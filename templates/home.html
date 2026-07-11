@@ -368,6 +368,11 @@
 
         <div class="result-modal-overlay" id="resultModal" aria-hidden="true">
           <button class="result-modal-close" id="modalClose" aria-label="Close image">&times;</button>
+          <div class="result-modal-zoom-controls">
+            <button class="result-zoom-btn" id="zoomOutBtn" aria-label="Zoom out">&minus;</button>
+            <button class="result-zoom-btn" id="zoomResetBtn" aria-label="Reset zoom">100%</button>
+            <button class="result-zoom-btn" id="zoomInBtn" aria-label="Zoom in">&plus;</button>
+          </div>
           <div class="result-modal-inner">
             <img id="modalImage" src="" alt="" class="result-modal-image">
           </div>
@@ -813,11 +818,42 @@ function initResultsModal() {
   if (!overlay) return;
 
   const modalImage = document.getElementById('modalImage');
+  const zoomInBtn = document.getElementById('zoomInBtn');
+  const zoomOutBtn = document.getElementById('zoomOutBtn');
+  const zoomResetBtn = document.getElementById('zoomResetBtn');
+
+  let scale = 1;
+  const minScale = 1;
+  const maxScale = 3;
+  const step = 0.25;
+
+  function applyZoom() {
+    modalImage.style.transform = `scale(${scale})`;
+    zoomResetBtn.textContent = `${Math.round(scale * 100)}%`;
+    zoomOutBtn.disabled = scale <= minScale;
+    zoomInBtn.disabled = scale >= maxScale;
+  }
+
+  function zoomIn() {
+    scale = Math.min(maxScale, scale + step);
+    applyZoom();
+  }
+
+  function zoomOut() {
+    scale = Math.max(minScale, scale - step);
+    applyZoom();
+  }
+
+  function resetZoom() {
+    scale = 1;
+    applyZoom();
+  }
 
   function openModal(el) {
     const d = el.dataset;
     modalImage.src = d.image;
     modalImage.alt = d.name || '';
+    resetZoom();
     overlay.classList.add('active');
     overlay.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -827,6 +863,7 @@ function initResultsModal() {
     overlay.classList.remove('active');
     overlay.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
+    resetZoom();
   }
 
   const scroll = document.getElementById('resultsGallery');
@@ -846,12 +883,26 @@ function initResultsModal() {
     });
   }
 
+  zoomInBtn.addEventListener('click', zoomIn);
+  zoomOutBtn.addEventListener('click', zoomOut);
+  zoomResetBtn.addEventListener('click', resetZoom);
+
+  overlay.addEventListener('wheel', (e) => {
+    if (!overlay.classList.contains('active')) return;
+    e.preventDefault();
+    if (e.deltaY < 0) zoomIn();
+    else zoomOut();
+  }, { passive: false });
+
   closeBtn.addEventListener('click', closeModal);
   overlay.addEventListener('click', (e) => {
     if (e.target === overlay) closeModal();
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && overlay.classList.contains('active')) closeModal();
+    if (!overlay.classList.contains('active')) return;
+    if (e.key === 'Escape') closeModal();
+    if (e.key === '+' || e.key === '=') zoomIn();
+    if (e.key === '-' || e.key === '_') zoomOut();
   });
 }
 
