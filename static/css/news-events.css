@@ -1,9 +1,0 @@
-/* ─── Events and News ────────────────────────────────────── */
-.events-section, .news-section { overflow: hidden; }
-.events-grid, .news-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
-.event-card, .news-card { padding:24px; border-radius:24px; background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(235,247,255,.78)); border:1px solid var(--card-blue-border); box-shadow:0 14px 30px rgba(18,52,77,.06); transition:transform .25s ease,box-shadow .25s ease; }
-.event-card:hover, .news-card:hover { transform:translateY(-4px); box-shadow:0 20px 38px rgba(18,52,77,.11); }
-.event-date { display:inline-flex; padding:5px 10px; margin-bottom:14px; border-radius:999px; background:rgba(29,111,163,.1); color:var(--primary-dark); font-size:.78rem; font-weight:800; }
-.event-card h3,.news-card h3 { margin:0 0 10px; color:var(--primary-dark); font-family:var(--font-display); font-size:1.55rem; line-height:1.05; }
-.event-card p,.news-card p { margin:0; color:var(--muted); line-height:1.65; }
-@media(max-width:900px){.events-grid,.news-grid{grid-template-columns:1fr 1fr}}@media(max-width:600px){.events-grid,.news-grid{grid-template-columns:1fr}.event-card,.news-card{padding:20px}}

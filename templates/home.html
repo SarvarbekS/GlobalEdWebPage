@@ -1,20 +1,1152 @@
-{% extends "base.html" %}
+
 {% load static %}
 {% load custom_tags %}
-{% block title %}GlobalEd Consulting{% endblock %}
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/hero.css' %}">
-<link rel="stylesheet" href="{% static 'css/sections-about.css' %}">
-<link rel="stylesheet" href="{% static 'css/founder-journey.css' %}">
-<link rel="stylesheet" href="{% static 'css/countries-results.css' %}">
-<link rel="stylesheet" href="{% static 'css/programs-opportunities.css' %}">
-<link rel="stylesheet" href="{% static 'css/news-events.css' %}">
-{% endblock %}
-{% block content %}
-<section class="welcome-section"><div class="welcome-grid"><div class="welcome-copy"><p class="eyebrow">Global education consulting</p><h1>Your future, globally connected.</h1><p class="welcome-text">Clear guidance for students and families pursuing international education opportunities.</p><div class="hero-actions"><a class="primary-btn" href="#programs">Explore programs</a><a class="secondary-btn" href="{% url 'contact' %}">Talk to us</a></div></div><div class="hero-visual"><div class="hero-rotation-shell"><div class="hero-rotation-glow hero-rotation-glow-one"></div><div class="hero-rotation-glow hero-rotation-glow-two"></div><div class="hero-rotation-card"><p class="hero-rotation-label">Study destinations</p><div class="hero-rotation-viewport"><div class="hero-rotation-track">{% for country in countries %}<div class="hero-rotation-item{% if forloop.first %} is-active{% endif %}">{{ country.name }}</div>{% empty %}<div class="hero-rotation-item is-active">Global opportunities</div>{% endfor %}</div></div></div></div></div></div></section>
-<section class="section-card about-section" id="about"><div class="about-grid"><div class="about-copy"><p class="section-tag">About</p><h2>Guidance built around your goals.</h2><p class="about-lead">We help students make confident, informed decisions about studying abroad.</p><p class="about-body">From choosing a country and university to applications, scholarships, and visa preparation, GlobalEd creates a clear path forward.</p><div class="about-actions"><a class="primary-btn" href="{% url 'contact' %}">Start a conversation</a></div></div><div class="journey-panel"><div class="journey-panel-head"><p class="section-tag">Your journey</p><h3>From questions to confident decisions</h3></div><div class="journey-timeline"><span class="journey-line"></span><span class="journey-progress"></span><div class="journey-stage"><div class="journey-node">1</div><div class="journey-content"><h3>Discover</h3><p>Clarify goals and priorities.</p></div></div><div class="journey-stage"><div class="journey-node">2</div><div class="journey-content"><h3>Match</h3><p>Find suitable countries and universities.</p></div></div><div class="journey-stage"><div class="journey-node">3</div><div class="journey-content"><h3>Apply</h3><p>Organize every next step.</p></div></div></div></div></div></section>
-<section class="section-card countries-section" id="countries"><div class="countries-header"><div><p class="section-tag">Destinations</p><h2>Where will you go?</h2></div><p class="countries-sub">Six countries. Hundreds of universities. One clear path forward.</p></div><div class="countries-mosaic">{% for country in countries %}<a class="country-card {% if forloop.first %}country-card--featured{% elif forloop.counter <= 3 %}country-card--stack{% else %}country-card--bottom{% endif %}" data-index="{{ forloop.counter }}" href="{% url 'country_detail' country.slug %}"><div class="country-image-wrap">{% if country.image %}<img class="country-image" src="{{ country.image.url }}" alt="{{ country.name }}">{% endif %}</div><div class="country-card-overlay"><div class="country-card-inner"><span class="country-card-tag">Study in</span><h3 class="country-card-name">{{ country.name }}</h3><span class="country-card-cta">Explore universities &rarr;</span></div></div></a>{% endfor %}</div></section>
-<section class="programs-section" id="programs"><div class="programs-shell"><div class="programs-heading"><p class="section-tag">Programs</p><h2>Tailored guidance for every stage.</h2></div><div class="programs-grid">{% for program in programs %}<article class="program-card"><div class="program-card-glow"></div><div class="program-card-top"><div class="program-icon">&#10003;</div><div class="program-top-copy"><span class="program-mini-tag">GlobalEd</span><h3>{{ program.name }}</h3></div></div><p class="program-description">{{ program.description }}</p><div class="program-card-footer"><a class="program-card-cta" href="{% url 'contact' %}">Learn more &rarr;</a></div></article>{% empty %}<article class="program-card"><h3>Study abroad guidance</h3><p class="program-description">Personalized advice for universities, scholarships, applications, and visas.</p></article>{% endfor %}</div></div></section>
-<section class="section-card events-section" id="events"><div class="section-heading"><p class="section-tag">Events</p><h2>Meet our team and partners.</h2></div><div class="events-grid">{% for event in events %}<article class="event-card"><span class="event-date">{{ event.date_range_display }}</span><h3>{{ event.title }}</h3>{% if event.subtitle %}<p>{{ event.subtitle }}</p>{% endif %}{% if event.summary %}<p>{{ event.summary }}</p>{% endif %}</article>{% empty %}<p>Events will appear here when new sessions are scheduled.</p>{% endfor %}</div></section>
-<section class="section-card news-section" id="news"><div class="section-heading"><p class="section-tag">News</p><h2>Latest updates from GlobalEd.</h2></div><div class="news-grid">{% for item in news %}<article class="news-card"><h3>{{ item.title }}</h3><p>{{ item.summary }}</p></article>{% empty %}<p>News will appear here as GlobalEd shares new updates.</p>{% endfor %}</div></section>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalEd Consulting</title>
+
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Replace with actual hosted versions of Geova Trial / Ceramon if you have licenses/webfont files -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <div class="page-bg" style="background-image: url('{% static "images/bg.jpg" %}');"></div>
+
+    <a class="skip-link"
+       href="#main-content"
+       style="background: url('{% static "images/bg_2.jpg" %}')">
+        Skip to content
+    </a>
+
+    <header class="site-header" id="siteHeader">
+        <nav class="navbar">
+            <a href="#welcome" class="brand" aria-label="GlobalEd home">
+                <img src="{% static 'logo.png' %}" alt="GlobalEd logo" class="brand-logo">
+            </a>
+
+            <div class="nav-desktop">
+                <ul class="nav-links">
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#results">Results</a></li>
+                    <li><a href="#events">Events</a></li>
+                    <li><a href="#news">News</a></li>
+                    <li><a href="#countries">Countries</a></li>
+                    <li><a href="#programs">Programs</a></li>
+                    <li><div class="nav-translate">
+                        <div id="google_translate_element"></div>
+                    </div></li>
+                </ul>
+
+                <a href="{% url 'contact' %}" class="nav-cta">Book Consultation</a>
+            </div>
+
+            <button class="nav-toggle" id="navToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#about">About</a>
+            <a href="#results">Results</a>
+            <a href="#events">Events</a>
+            <a href="#news">News</a>
+            <a href="#countries">Countries</a>
+            <a href="#programs">Programs</a>
+            <div class="nav-translate">
+                <div id="google_translate_element"></div>
+            </div>
+            <a href="{% url 'contact' %}" class="mobile-nav-cta">Book Consultation</a>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <!-- Hero -->
+        <section id="welcome" class="welcome-section">
+            <div class="hero-glow hero-glow-one"></div>
+            <div class="hero-glow hero-glow-two"></div>
+
+            <div class="welcome-grid">
+                <div class="welcome-copy">
+                    <p class="eyebrow">Global Education Consulting</p>
+                    <h1>Beyond Borders</h1>
+                    <p class="welcome-text">
+                        GlobalEd helps students and families make confident international education decisions through clear planning,
+                        trusted guidance, and carefully matched academic opportunities.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a href="#programs" class="primary-btn">Explore Programs</a>
+                        <a href="#results" class="secondary-btn">See Results</a>
+                    </div>
+
+                    <div class="hero-trust hero-stats">
+                        <div class="trust-item stat-card">
+                            <strong>15+</strong>
+                            <span>Countries</span>
+                        </div>
+                        <div class="trust-item stat-card">
+                            <strong>100+</strong>
+                            <span>Students Guided</span>
+                        </div>
+                        <div class="trust-item stat-card">
+                            <strong>1:1</strong>
+                            <span>Personal Support</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-visual">
+                    <div class="hero-rotation-shell">
+                        <div class="hero-rotation-glow hero-rotation-glow-one"></div>
+                        <div class="hero-rotation-glow hero-rotation-glow-two"></div>
+
+                        <div class="hero-rotation-card"
+                             style="background: url('{% static "images/bg_2.jpg" %}') center center / cover no-repeat;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Opportunities wheel -->
+{#        <section class="opportunities-wheel-section" id="opportunities">#}
+{#            <div class="opportunities-wheel-shell">#}
+{#                <div class="opportunities-wheel-head">#}
+{#                    <p class="section-tag">Opportunities</p>#}
+{#                    <h2>Explore featured pathways</h2>#}
+{#                </div>#}
+{##}
+{#                <div class="opportunities-wheel-viewport">#}
+{#                    <div class="opportunities-wheel-track" id="opportunitiesWheelTrack"></div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </section>#}
+
+    <!-- University logos -->
+        <section class="section-card university-logos-section" aria-labelledby="university-logos-title">
+            <div class="section-heading university-logos-head">
+                <p class="section-tag">Partners</p>
+                <h2 id="university-logos-title">Universities we work with</h2>
+            </div>
+
+            {% if universities %}
+            <div class="university-logo-marquee">
+                <div class="university-logo-track">
+                    {% for university in universities %}
+                        <img src="{{ university.logo.url }}" alt="{{ university.name }} logo" class="university-logo-marquee-image">
+                    {% endfor %}
+
+                    {% for university in universities %}
+                        <img src="{{ university.logo.url }}" alt="" class="university-logo-marquee-image">
+                    {% endfor %}
+
+                    {% for university in universities %}
+                        <img src="{{ university.logo.url }}" alt="{{ university.name }} logo" class="university-logo-marquee-image">
+                    {% endfor %}
+
+                    {% for university in universities %}
+                        <img src="{{ university.logo.url }}" alt="" class="university-logo-marquee-image">
+                    {% endfor %}
+
+                    {% for university in universities %}
+                        <img src="{{ university.logo.url }}" alt="{{ university.name }} logo" class="university-logo-marquee-image">
+                    {% endfor %}
+
+                    {% for university in universities %}
+                        <img src="{{ university.logo.url }}" alt="" class="university-logo-marquee-image">
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- About -->
+        <section id="about" class="section-card about-section">
+            <div class="about-grid">
+                <div class="about-copy">
+                    <p class="section-tag">About</p>
+                    <h2>Who we are</h2>
+
+                    <p class="about-lead">
+                        Founded in 2025, GlobalEd Consulting helps students achieve their international education goals through professional guidance, personalized support, and direct access to trusted global opportunities.
+                    </p>
+
+                    <p class="about-body">
+                        We work closely with universities, educational institutions, and international organizations to provide reliable and up-to-date pathways for students worldwide. Our mission is to help every student choose the right major, university, and academic direction based on their goals, interests, and future career plans.
+                    </p>
+
+                    <p class="about-body">
+                        With a professional and experienced team, we offer comprehensive consultation across university admissions, scholarships, visa preparation, and student support. We believe every student deserves a unique strategy, and we are committed to making the admission journey clearer, easier, and more successful.
+                    </p>
+
+                    <p class="about-body">
+                        At GlobalEd Consulting, we do more than process applications — we help students build a brighter future through quality international education and meaningful global opportunities.
+                    </p>
+
+                    <div class="about-actions">
+                        <a href="#contact" class="primary-btn">Contact Us</a>
+                        <a href="#countries" class="secondary-btn">View Countries</a>
+                    </div>
+                </div>
+
+                <div class="about-visual">
+                    <div class="about-proof-card">
+    <div class="about-proof-icon">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 3L19 6V11C19 16 15.55 20.74 12 22C8.45 20.74 5 16 5 11V6L12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9.5 12.2L11.2 13.9L14.8 10.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </div>
+
+    <div class="about-proof-content">
+        <p class="about-ceo-label">Company verification</p>
+        <h3 class="about-proof-title">Legally registered in Uzbekistan</h3>
+        <p class="about-proof-text">
+            GlobalEd Consulting is officially registered, and the company registration certificate can be viewed through the my.gov.uz verification page.
+        </p>
+
+        <div class="about-proof-actions">
+            <a href="https://new.birdarcha.uz/document/6d679d44-801e-4851-a797-7151a49556df" target="_blank" rel="noopener noreferrer" class="about-proof-link">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M14 5H19V10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M10 14L19 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M19 14V18C19 18.53 18.79 19.04 18.41 19.41C18.04 19.79 17.53 20 17 20H6C5.47 20 4.96 19.79 4.59 19.41C4.21 19.04 4 18.53 4 18V7C4 6.47 4.21 5.96 4.59 5.59C4.96 5.21 5.47 5 6 5H10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Check certification
+            </a>
+
+            <span class="about-proof-brand">
+                <img src="{% static 'images/mygov-logo.png' %}" alt="my.gov.uz logo">
+                my.gov.uz
+            </span>
+        </div>
+    </div>
+</div>
+
+                    <div class="journey-panel">
+                        <div class="journey-panel-head">
+                            <span class="about-badge">Guided Journey</span>
+                            <p>From first questions to confident decisions.</p>
+                        </div>
+
+                        <div class="journey-timeline">
+                            <div class="journey-line"></div>
+                            <div class="journey-progress"></div>
+
+                            <div class="journey-stage">
+                                <div class="journey-node">01</div>
+                                <div class="journey-content">
+                                    <h3>Discover</h3>
+                                    <p>We begin by understanding the student’s goals, priorities, and academic direction.</p>
+                                </div>
+                            </div>
+
+                            <div class="journey-stage">
+                                <div class="journey-node">02</div>
+                                <div class="journey-content">
+                                    <h3>Match</h3>
+                                    <p>Countries, universities, and pathways are narrowed into realistic and suitable options.</p>
+                                </div>
+                            </div>
+
+                            <div class="journey-stage">
+                                <div class="journey-node">03</div>
+                                <div class="journey-content">
+                                    <h3>Prepare</h3>
+                                    <p>Applications, timelines, and supporting steps are organized into a clear process.</p>
+                                </div>
+                            </div>
+
+                            <div class="journey-stage">
+                                <div class="journey-node">04</div>
+                                <div class="journey-content">
+                                    <h3>Move Forward</h3>
+                                    <p>Students progress with more confidence, structure, and trust in each next decision.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-card founder-contact-section">
+    <div class="founder-contact-card">
+        <div class="founder-contact-media">
+            <img src="{% static 'images/ceo.png' %}" alt="Alisher Abdugapporov, Founder and CEO of GlobalEd Consulting" class="founder-contact-image">
+        </div>
+
+        <div class="founder-contact-content">
+            <p class="section-tag">Founder</p>
+            <h2>Connect with Alisher Abdugapporov</h2>
+
+            <p class="founder-contact-lead">
+                Alisher Abdugapporov is the Founder & CEO of GlobalEd Consulting, leading international education strategy and helping students and families navigate admissions, scholarships, and long-term academic planning.
+            </p>
+
+            <p class="founder-contact-body">
+                His work focuses on building trusted global pathways, strengthening institutional relationships, and creating clearer, more structured guidance for students pursuing international education opportunities.
+            </p>
+
+            <div class="founder-contact-links">
+                <a href="https://t.me/Alisher_Arabbovich" class="social-link" target="_blank" rel="noopener noreferrer">
+                    <span class="social-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="none">
+                            <path d="M21.5 4.5L18.4 19.2C18.17 20.24 17.57 20.49 16.7 20.02L11.95 16.52L9.66 18.73C9.41 18.98 9.2 19.19 8.72 19.19L9.06 14.36L17.85 6.42C18.23 6.08 17.77 5.89 17.27 6.22L6.41 13.06L1.73 11.6C0.71 11.28 0.69 10.58 1.94 10.09L20.23 3.04C21.08 2.73 21.82 3.23 21.5 4.5Z" fill="currentColor"/>
+                        </svg>
+                    </span>
+                    <span>Message on Telegram</span>
+                </a>
+
+                <a href="/contact" class="secondary-btn">Contact the team</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <!-- Results -->
+        <section class="section-card results-section" id="results">
+            <div class="section-heading">
+                <p class="section-tag">Student Success</p>
+                <h2>Real students. Real outcomes.</h2>
+                <p>Every card represents a student whose future changed direction. These are their stories.</p>
+            </div>
+
+            <div class="results-viewport" id="resultsViewport">
+                <div class="results-gallery" id="resultsGallery">
+                    {% for poster in posters %}
+                    <div class="result-poster">
+                        <img src="{{ poster.image.url }}" alt="{{ poster.name }}" class="result-image">
+                    </div>
+                    {% endfor %}
+                    {% for poster in posters %}
+
+                    <div class="result-poster">
+                        <img src="{{ poster.image.url }}" alt="{{ poster.name }}" class="result-image">
+                    </div>
+                    {% endfor %}
+                    {% for poster in posters %}
+                    <div class="result-poster">
+                        <img src="{{ poster.image.url }}" alt="{{ poster.name }}" class="result-image">
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Events -->
+        <section class="section-card events-section" id="events">
+            <div class="section-heading events-head">
+                <p class="section-tag">Events</p>
+                <h2>Upcoming GlobalEd events</h2>
+                <p>Webinars, info sessions, and fairs where you can meet our team and partners.</p>
+            </div>
+
+            {% if events %}
+            <div class="events-grid">
+                {% for event in events %}
+                <article
+                    class="event-card {% if event.featured %}event-card-featured{% endif %}"
+                    tabindex="0"
+                    role="button"
+                    data-title="{{ event.title }}"
+                    data-subtitle="{{ event.subtitle }}"
+                    data-date="{{ event.date_range_display }}"
+                    data-location="{{ event.location }}"
+                    data-body="{{ event.body|linebreaksbr }}"
+                    {% if event.image %}
+                    data-image="{{ event.image.url }}"
+                    {% endif %}
+                >
+                    <div class="event-card-inner">
+
+                        {% if event.image %}
+                        <div class="event-card-image-wrap">
+                            <img src="{{ event.image.url }}" alt="{{ event.title }}" class="event-card-image">
+                        </div>
+                        {% endif %}
+
+                        <div class="event-card-body">
+                            <p class="event-date">{{ event.date_range_display }}</p>
+                            {% if event.location %}
+                            <p class="event-location">{{ event.location }}</p>
+                            {% endif %}
+                            <h3>{{ event.title }}</h3>
+                            {% if event.subtitle %}
+                            <p class="event-subtitle">{{ event.subtitle }}</p>
+                            {% endif %}
+                            <p class="event-summary">{{ event.summary }}</p>
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="events-empty">Events will appear here when new sessions are scheduled.</p>
+            {% endif %}
+        </section>
+
+        <div class="event-modal-overlay" id="eventModal" aria-hidden="true">
+            <div class="event-modal">
+                <button class="event-modal-close" id="eventModalClose" aria-label="Close event">
+                    ×
+                </button>
+                <p class="section-tag">Event</p>
+                <h3 id="eventModalTitle"></h3>
+                <p class="event-modal-meta">
+                    <span id="eventModalDate"></span>
+                    <span id="eventModalLocation"></span>
+                </p>
+                <p class="event-modal-subtitle" id="eventModalSubtitle"></p>
+                <div class="event-modal-image-wrap" id="eventModalImageWrap">
+                    <img id="eventModalImage" alt="">
+                </div>
+                <div class="event-modal-body" id="eventModalBody"></div>
+            </div>
+        </div>
+
+
+        <!-- News -->
+        <section class="section-card news-section" id="news">
+            <div class="section-heading">
+                <p class="section-tag">News</p>
+                <h2>GlobalEd updates &amp; stories</h2>
+                <p>Announcements, partnerships, and student success stories from our consulting team.</p>
+            </div>
+
+            {% if news_items %}
+            <div class="news-grid">
+                {% for item in news_items %}
+                <article class="news-card"
+                         tabindex="0"
+                         role="button"
+                         data-title="{{ item.title }}"
+                         data-date="{{ item.published_at|date:'F j, Y' }}"
+                         data-source="{{ item.source }}"
+                         data-body="{{ item.body|linebreaksbr }}"
+                         {% if item.image %}
+                         data-image="{{ item.image.url }}"
+                         {% endif %}>
+                    {% if item.image %}
+                    <div class="news-card-image-wrap">
+                        <img src="{{ item.image.url }}" alt="{{ item.title }}" class="news-card-image">
+                    </div>
+                    {% endif %}
+                    <h3>{{ item.title }}</h3>
+                    <p class="news-meta">
+                        <span>{{ item.published_at|date:'F j, Y' }}</span>
+                        {% if item.source %}<span>· {{ item.source }}</span>{% endif %}
+                    </p>
+                    <p class="news-summary">{{ item.summary }}</p>
+                </article>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="news-empty">News will appear here as GlobalEd shares new updates.</p>
+            {% endif %}
+        </section>
+
+        <div class="news-modal-overlay" id="newsModal" aria-hidden="true">
+            <div class="news-modal">
+                <button class="news-modal-close" id="newsModalClose" aria-label="Close news">
+                    ×
+                </button>
+                <p class="section-tag">News</p>
+                <h3 id="newsModalTitle"></h3>
+                <p class="news-modal-meta">
+                    <span id="newsModalDate"></span>
+                    <span id="newsModalSource"></span>
+                </p>
+                <div class="news-modal-image-wrap" id="newsModalImageWrap">
+                    <img id="newsModalImage" alt="">
+                </div>
+                <div class="news-modal-body" id="newsModalBody"></div>
+            </div>
+        </div>
+
+        <!-- Countries -->
+        <section class="section-card countries-section" id="countries">
+            <div class="countries-header">
+                <div>
+                    <p class="section-tag">Where will you go?</p>
+                    <h2>Study destinations</h2>
+                </div>
+                <p class="countries-sub">Six countries. Hundreds of universities. One clear path forward.</p>
+            </div>
+
+            <div class="countries-mosaic">
+                <!-- Featured large card -->
+                <a href="{% url 'country_detail' 'South Korea' %}" class="country-card country-card--featured" data-index="1">
+                    <div class="country-image-wrap">
+                        <img src="{% static 'images/southkorea.jpg' %}" alt="South Korea" class="country-image">
+                    </div>
+                    <div class="country-card-overlay">
+                        <div class="country-card-inner">
+                            <span class="country-card-tag">Most Popular</span>
+                            <h3 class="country-card-name">South Korea</h3>
+                            <p class="country-card-detail">Top universities, generous scholarships, vibrant culture</p>
+                            <span class="country-card-cta">
+                                Explore
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Right column stacked -->
+                <div class="countries-stack">
+                    <a href="{% url 'country_detail' 'US' %}" class="country-card" data-index="2">
+                        <div class="country-image-wrap">
+                            <img src="{% static 'images/usa.jpg' %}" alt="United States" class="country-image">
+                        </div>
+                        <div class="country-card-overlay">
+                            <div class="country-card-inner">
+                                <h3 class="country-card-name">United States</h3>
+                                <span class="country-card-cta">
+                                    Explore
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="{% url 'country_detail' 'UK' %}" class="country-card" data-index="3">
+                        <div class="country-image-wrap">
+                            <img src="{% static 'images/uk.jpg' %}" alt="United Kingdom" class="country-image">
+                        </div>
+                        <div class="country-card-overlay">
+                            <div class="country-card-inner">
+                                <h3 class="country-card-name">United Kingdom</h3>
+                                <span class="country-card-cta">
+                                    Explore
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Bottom row -->
+                <a href="{% url 'country_detail' 'Australia' %}" class="country-card country-card--bottom" data-index="4">
+                    <div class="country-image-wrap">
+                        <img src="{% static 'images/australia.jpg' %}" alt="Australia" class="country-image">
+                    </div>
+                    <div class="country-card-overlay">
+                        <div class="country-card-inner">
+                            <h3 class="country-card-name">Australia</h3>
+                            <span class="country-card-cta">
+                                Explore
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="{% url 'country_detail' 'New Zealand' %}" class="country-card country-card--bottom" data-index="5">
+                    <div class="country-image-wrap">
+                        <img src="{% static 'images/newzealand.jpg' %}" alt="New Zealand" class="country-image">
+                    </div>
+                    <div class="country-card-overlay">
+                        <div class="country-card-inner">
+                            <h3 class="country-card-name">New Zealand</h3>
+                            <span class="country-card-cta">
+                                Explore
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="{% url 'country_detail' 'Europe' %}" class="country-card country-card--bottom" data-index="6">
+                    <div class="country-image-wrap">
+                        <img src="{% static 'images/europe.jpg' %}" alt="Europe" class="country-image">
+                    </div>
+                    <div class="country-card-overlay">
+                        <div class="country-card-inner">
+                            <h3 class="country-card-name">Europe</h3>
+                            <span class="country-card-cta">
+                                Explore
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Programs -->
+        <section class="programs-section" id="programs">
+            <div class="programs-shell">
+                <div class="programs-heading">
+                    <p class="section-tag">Programs</p>
+                    <div class="programs-heading-row">
+                        <div>
+                            <h2>Our programs</h2>
+                            <p class="programs-intro">
+                                Tailored guidance for every stage of the study abroad journey, from first shortlist to final visa.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="programs-grid">
+                    {% for program in programs %}
+                    <article class="program-card">
+                        <div class="program-card-glow"></div>
+
+                        <div class="program-card-top">
+                            <div class="program-icon">
+                                {% if "bachelor" in program.name|lower %}
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M2 8l10-5 10 5-10 5-10-5z"/>
+                                    <path d="M6 10.5v4.5c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5"/>
+                                </svg>
+                                {% elif "master" in program.name|lower %}
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 3l9 4.5-9 4.5-9-4.5L12 3z"/>
+                                    <path d="M7 12v4c0 1.7 2.2 3 5 3s5-1.3 5-3v-4"/>
+                                    <path d="M21 8v6"/>
+                                </svg>
+                                {% else %}
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 19.5V6.5A2.5 2.5 0 0 1 6.5 4H20"/>
+                                    <path d="M8 8h8"/>
+                                    <path d="M8 12h8"/>
+                                    <path d="M8 16h5"/>
+                                </svg>
+                                {% endif %}
+                            </div>
+
+                            <div class="program-top-copy">
+                                <span class="program-mini-tag">Global pathway</span>
+                                <h3>{{ program.name }}</h3>
+                            </div>
+                        </div>
+
+                        <p class="program-description">{{ program.description }}</p>
+
+                        <div class="program-benefits">
+                            {% for benefit in program.benefits.splitlines %}
+                            {% if benefit.strip %}
+                            <div class="program-benefit-item">
+                                <span class="program-benefit-dot">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="20 6 9 17 4 12"/>
+                                    </svg>
+                                </span>
+                                <span>{{ benefit }}</span>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        <div class="program-card-footer">
+                            <a href="/contact/" class="program-card-cta">
+                                Enquire now
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div>
+                <h3>GlobalEd Consulting</h3>
+                <p>Education consulting for international academic pathways.</p>
+            </div>
+
+            <div>
+                <h4>Contact</h4>
+                <p>Email: <a href="mailto:info@globaled.uz">info@globaled.uz</a></p>
+                <p>Phone: +998 71 230 04 04</p>
+                <p>       +998 91 133 70 10</p>
+                <p><a href="https://yandex.com/maps/-/CPHf4OLa">Address: Afrosiyob Business Centre, 14 Afrosiyob Street, Mirabad District, Tashkent, Uzbekistan.</a></p>
+            </div>
+
+            <div>
+                <h4>Navigation</h4>
+                <p><a href="#about">About</a></p>
+                <p><a href="#results">Results</a></p>
+                <p><a href="#news">News</a></p>
+                <p><a href="#countries">Countries</a></p>
+                <p><a href="/contact/">Contact</a></p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 GlobalEd Consulting. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar toggle
+const navToggle = document.getElementById('navToggle');
+const mobileMenu = document.getElementById('mobileMenu');
+const siteHeader = document.getElementById('siteHeader');
+
+if (navToggle && mobileMenu) {
+    navToggle.addEventListener('click', () => {
+        mobileMenu.classList.toggle('active');
+        const expanded = navToggle.getAttribute('aria-expanded') === 'true';
+        navToggle.setAttribute('aria-expanded', String(!expanded));
+    });
+    mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            navToggle.setAttribute('aria-expanded', 'false');
+        });
+    });
+}
+
+function updateHeaderOnScroll() {
+    if (!siteHeader) return;
+    siteHeader.classList.toggle('scrolled', window.scrollY > 16);
+}
+window.addEventListener('scroll', updateHeaderOnScroll);
+window.addEventListener('load', updateHeaderOnScroll);
+
+// Infinite Results Scroll
+function initInfiniteResultsScroll() {
+    const resultsScroll = document.getElementById('resultsScroll');
+    if (!resultsScroll) return;
+
+    const originalItems = Array.from(resultsScroll.querySelectorAll('.result-poster'));
+    if (!originalItems.length) return;
+
+    if (!resultsScroll.dataset.cloned) {
+        originalItems.forEach(item => {
+            const clone = item.cloneNode(true);
+            clone.setAttribute('aria-hidden', 'true');
+            clone.removeAttribute('tabindex');
+            clone.removeAttribute('role');
+            resultsScroll.appendChild(clone);
+        });
+        resultsScroll.dataset.cloned = 'true';
+    }
+
+    let animationId;
+    let position = 0;
+    const speed = 0.4;
+
+    function getTrackWidth() {
+        const gap = parseFloat(window.getComputedStyle(resultsScroll).gap) || 0;
+        return originalItems.reduce((total, item, i) => {
+            return total + item.offsetWidth + (i < originalItems.length - 1 ? gap : 0);
+        }, 0);
+    }
+
+    function startAnimation() {
+        const resetPoint = getTrackWidth();
+        function step() {
+            position += speed;
+            if (position >= resetPoint) position = 0;
+            resultsScroll.style.transform = `translate3d(-${position}px, 0, 0)`;
+            animationId = requestAnimationFrame(step);
+        }
+        if (animationId) cancelAnimationFrame(animationId);
+        animationId = requestAnimationFrame(step);
+    }
+
+    startAnimation();
+
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            position = 0;
+            resultsScroll.style.transform = 'translate3d(0, 0, 0)';
+            startAnimation();
+        }, 150);
+    });
+}
+
+// Results Modal
+function initResultsModal() {
+    const overlay  = document.getElementById('resultModal');
+    const closeBtn = document.getElementById('modalClose');
+    if (!overlay) return;
+
+    const modalImage       = document.getElementById('modalImage');
+    const modalName        = document.getElementById('modalName');
+    const modalCountryText = document.getElementById('modalCountryText');
+    const modalUniversity  = document.getElementById('modalUniversity');
+    const modalDescription = document.getElementById('modalDescription');
+
+    function openModal(el) {
+        const d = el.dataset;
+        modalName.textContent        = d.name        || '';
+        modalCountryText.textContent = d.country      || '';
+        modalUniversity.textContent  = d.university   || '';
+        modalDescription.textContent = d.description  || '';
+        modalImage.src = d.image || '';
+        modalImage.alt = d.name  || '';
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Use delegation on the scroll container — catches both originals and clones
+    const scroll = document.getElementById('resultsScroll');
+    if (scroll) {
+        scroll.addEventListener('click', e => {
+            const card = e.target.closest('.result-poster[data-name]');
+            // Only open if it's an original (has tabindex) — ignore aria-hidden clones
+            if (card && card.getAttribute('aria-hidden') !== 'true') {
+                openModal(card);
+            }
+        });
+
+        scroll.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                const card = e.target.closest('.result-poster[data-name]');
+                if (card && card.getAttribute('aria-hidden') !== 'true') {
+                    e.preventDefault();
+                    openModal(card);
+                }
+            }
+        });
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+}
+
+function initHeroTextRotation() {
+    const track = document.getElementById('heroRotationTrack');
+    if (!track) return;
+
+    const rotationTexts = [
+        "100% scholarship in Korea",
+        "$6000 scholarship in London",
+        "Fully funded scholarship in Italy",
+        "Top universities in Seoul",
+        "Affordable tuition in Europe",
+        "Scholarships in Australia",
+        "Study and work in New Zealand"
+    ];
+
+    let activeIndex = 0;
+    const offsets = [-2, -1, 0, 1, 2];
+
+    function wrap(index) {
+        return (index % rotationTexts.length + rotationTexts.length) % rotationTexts.length;
+    }
+
+    function render() {
+        track.innerHTML = "";
+
+        offsets.forEach(offset => {
+            const item = document.createElement("div");
+            item.className = "hero-rotation-item";
+
+            if (offset === 0) item.classList.add("is-active");
+            if (Math.abs(offset) === 1) item.classList.add("is-near");
+
+            item.textContent = rotationTexts[wrap(activeIndex + offset)];
+            track.appendChild(item);
+        });
+    }
+
+    render();
+
+    setInterval(() => {
+        activeIndex = wrap(activeIndex + 1);
+        render();
+    }, 1000);
+}
+
+function initContactRoleSwitcher() {
+    const form = document.getElementById('contactForm');
+    if (!form) return;
+
+    const roleCards = document.querySelectorAll('.contact-role-card');
+    const senderType = document.getElementById('senderType');
+    const studentFields = document.querySelectorAll('.student-only-field');
+    const partnerFields = document.querySelectorAll('.partner-only-field');
+    const formTitle = document.getElementById('contactFormTitle');
+    const formIntro = document.getElementById('contactFormIntro');
+    const submitText = document.getElementById('contactSubmitText');
+
+    const studentCountry = document.getElementById('country_interest');
+    const partnerInstitution = document.getElementById('institution_name');
+    const organizationType = document.getElementById('organization_type');
+    const partnerCountry = document.getElementById('partner_country');
+
+    function toggleRequired(el, isRequired) {
+        if (!el) return;
+        el.required = isRequired;
+    }
+
+    function setRole(role) {
+        senderType.value = role;
+
+        roleCards.forEach(card => {
+            card.classList.toggle('active', card.dataset.role === role);
+        });
+
+        const isStudent = role === 'student';
+
+        studentFields.forEach(el => {
+            el.style.display = isStudent ? '' : 'none';
+        });
+
+        partnerFields.forEach(el => {
+            el.style.display = isStudent ? 'none' : '';
+        });
+
+        if (formTitle) {
+            formTitle.textContent = isStudent
+                ? 'Start your journey with a conversation.'
+                : 'Start a partnership conversation.';
+        }
+
+        if (formIntro) {
+            formIntro.textContent = isStudent
+                ? 'Choose the type of inquiry below and fill in the matching form.'
+                : 'Tell us about your institution and partnership goals, and our team will respond shortly.';
+        }
+
+        if (submitText) {
+            submitText.textContent = isStudent ? 'Send inquiry' : 'Send partnership inquiry';
+        }
+
+        toggleRequired(studentCountry, isStudent);
+        toggleRequired(partnerInstitution, !isStudent);
+        toggleRequired(organizationType, !isStudent);
+        toggleRequired(partnerCountry, !isStudent);
+    }
+
+    roleCards.forEach(card => {
+        card.addEventListener('click', () => setRole(card.dataset.role));
+    });
+
+    const initialRole = senderType.value === 'partner' ? 'partner' : 'student';
+    setRole(initialRole);
+}
+
+function initOpportunitiesWheel() {
+    const track = document.getElementById('opportunitiesWheelTrack');
+    if (!track) return;
+
+    const items = [
+        "Top universities in Seoul",
+        "Affordable tuition in Europe",
+        "Scholarships in Australia",
+        "Study and work in New Zealand",
+        "100% scholarship in Korea",
+        "$6000 scholarship in London",
+        "Fully funded scholarship in Italy"
+    ];
+
+    let activeIndex = 0;
+    const offsets = [-1, 0, 1];
+
+    function wrap(index) {
+        return (index % items.length + items.length) % items.length;
+    }
+
+    function render() {
+        track.innerHTML = "";
+
+        offsets.forEach(offset => {
+            const el = document.createElement("div");
+            el.className = "opportunity-wheel-item";
+
+            if (offset === 0) el.classList.add("is-active");
+            if (Math.abs(offset) === 1) el.classList.add("is-near");
+
+            const text = document.createElement("span");
+            text.textContent = items[wrap(activeIndex + offset)];
+            el.appendChild(text);
+
+            track.appendChild(el);
+        });
+    }
+
+    render();
+
+    setInterval(() => {
+        activeIndex = wrap(activeIndex + 1);
+        render();
+    }, 1800);
+}
+
+function initNewsModal() {
+    const overlay = document.getElementById('newsModal');
+    if (!overlay) return;
+
+    const closeBtn = document.getElementById('newsModalClose');
+    const titleEl = document.getElementById('newsModalTitle');
+    const dateEl = document.getElementById('newsModalDate');
+    const sourceEl = document.getElementById('newsModalSource');
+    const bodyEl = document.getElementById('newsModalBody');
+    const imageWrap = document.getElementById('newsModalImageWrap');
+    const imageEl = document.getElementById('newsModalImage');
+    const cards = document.querySelectorAll('.news-card');
+
+    if (!cards.length) return;
+
+    function openModal(card) {
+        const d = card.dataset;
+        titleEl.textContent = d.title || '';
+        dateEl.textContent = d.date || '';
+        sourceEl.textContent = d.source ? `· ${d.source}` : '';
+        bodyEl.innerHTML = d.body || '';
+
+        if (d.image) {
+            imageEl.src = d.image;
+            imageEl.alt = d.title || '';
+            imageWrap.style.display = '';
+        } else {
+            imageEl.src = '';
+            imageEl.alt = '';
+            imageWrap.style.display = 'none';
+        }
+
+        overlay.classList.add('active');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        overlay.classList.remove('active');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+
+    cards.forEach(card => {
+        card.addEventListener('click', () => openModal(card));
+        card.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openModal(card);
+            }
+        });
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => {
+        if (e.target === overlay) closeModal();
+    });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && overlay.classList.contains('active')) closeModal();
+    });
+}
+
+function initEventModal() {
+    const overlay = document.getElementById('eventModal');
+    if (!overlay) return;
+
+    const closeBtn = document.getElementById('eventModalClose');
+    const titleEl = document.getElementById('eventModalTitle');
+    const subtitleEl = document.getElementById('eventModalSubtitle');
+    const dateEl = document.getElementById('eventModalDate');
+    const locationEl = document.getElementById('eventModalLocation');
+    const bodyEl = document.getElementById('eventModalBody');
+    const imgWrap = document.getElementById('eventModalImageWrap');
+    const imgEl = document.getElementById('eventModalImage');
+
+    const cards = document.querySelectorAll('.event-card');
+    if (!cards.length) return;
+
+    function openModal(card) {
+        const d = card.dataset;
+        titleEl.textContent = d.title || '';
+        subtitleEl.textContent = d.subtitle || '';
+        subtitleEl.style.display = d.subtitle ? '' : 'none';
+        dateEl.textContent = d.date || '';
+        locationEl.textContent = d.location ? `· ${d.location}` : '';
+        bodyEl.innerHTML = d.body || '';
+
+        if (d.image) {
+            imgEl.src = d.image;
+            imgEl.alt = d.title || '';
+            imgWrap.style.display = '';
+        } else {
+            imgEl.src = '';
+            imgEl.alt = '';
+            imgWrap.style.display = 'none';
+        }
+
+        overlay.classList.add('active');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        overlay.classList.remove('active');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+
+    cards.forEach(card => {
+        card.addEventListener('click', () => openModal(card));
+        card.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openModal(card);
+            }
+        });
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => {
+        if (e.target === overlay) closeModal();
+    });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && overlay.classList.contains('active')) {
+            closeModal();
+        }
+    });
+}
+
+window.addEventListener('load', () => {
+    initInfiniteResultsScroll();
+    initResultsModal();
+    initHeroTextRotation();
+    initContactRoleSwitcher();
+    initOpportunitiesWheel();
+    initNewsModal && initNewsModal();
+    initEventModal && initEventModal();
+});
+    </script>
+<script>
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {
+        pageLanguage: 'en',
+        includedLanguages: 'en,uz,ru',
+        autoDisplay: false
+      },
+      'google_translate_element'
+    );
+  }
+</script>
+
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>
