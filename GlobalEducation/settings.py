@@ -14,6 +14,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://globaled.uz",
     "https://www.globaled.uz",
 ]
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
