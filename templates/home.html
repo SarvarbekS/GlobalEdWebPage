@@ -326,25 +326,25 @@
 
             <div class="results-viewport" id="resultsViewport">
                 <div class="results-gallery" id="resultsGallery">
-                    {% for poster in posters %}
-                    <div class="result-poster">
-                        <img src="{{ poster.image.url }}" alt="{{ poster.name }}" class="result-image">
-                    </div>
-                    {% endfor %}
-                    {% for poster in posters %}
-
-                    <div class="result-poster">
-                        <img src="{{ poster.image.url }}" alt="{{ poster.name }}" class="result-image">
-                    </div>
-                    {% endfor %}
-                    {% for poster in posters %}
-                    <div class="result-poster">
-                        <img src="{{ poster.image.url }}" alt="{{ poster.name }}" class="result-image">
-                    </div>
-                    {% endfor %}
+                  {% for poster in posters %}
+                  <div class="result-poster"
+                       tabindex="0"
+                       role="button"
+                       data-name="{{ poster.name }}"
+                       data-image="{{ poster.image.url }}">
+                    <img src="{{ poster.image.url }}" alt="{{ poster.name }}" class="result-image">
+                  </div>
+                  {% endfor %}
                 </div>
             </div>
         </section>
+
+        <div class="result-modal-overlay" id="resultModal" aria-hidden="true">
+          <button class="result-modal-close" id="modalClose" aria-label="Close image">&times;</button>
+          <div class="result-modal-inner">
+            <img id="modalImage" src="" alt="" class="result-modal-image">
+          </div>
+        </div>
 
         <!-- Events -->
         <section class="section-card events-section" id="events">
@@ -781,58 +781,51 @@ function initInfiniteResultsScroll() {
 
 // Results Modal
 function initResultsModal() {
-    const overlay  = document.getElementById('resultModal');
-    const closeBtn = document.getElementById('modalClose');
-    if (!overlay) return;
+  const overlay = document.getElementById('resultModal');
+  const closeBtn = document.getElementById('modalClose');
+  if (!overlay) return;
 
-    const modalImage       = document.getElementById('modalImage');
-    const modalName        = document.getElementById('modalName');
-    const modalCountryText = document.getElementById('modalCountryText');
-    const modalUniversity  = document.getElementById('modalUniversity');
-    const modalDescription = document.getElementById('modalDescription');
+  const modalImage = document.getElementById('modalImage');
 
-    function openModal(el) {
-        const d = el.dataset;
-        modalName.textContent        = d.name        || '';
-        modalCountryText.textContent = d.country      || '';
-        modalUniversity.textContent  = d.university   || '';
-        modalDescription.textContent = d.description  || '';
-        modalImage.src = d.image || '';
-        modalImage.alt = d.name  || '';
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
+  function openModal(el) {
+    const d = el.dataset;
+    modalImage.src = d.image;
+    modalImage.alt = d.name || '';
+    overlay.classList.add('active');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
 
-    function closeModal() {
-        overlay.classList.remove('active');
-        document.body.style.overflow = '';
-    }
+  function closeModal() {
+    overlay.classList.remove('active');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
 
-    // Use delegation on the scroll container — catches both originals and clones
-    const scroll = document.getElementById('resultsScroll');
-    if (scroll) {
-        scroll.addEventListener('click', e => {
-            const card = e.target.closest('.result-poster[data-name]');
-            // Only open if it's an original (has tabindex) — ignore aria-hidden clones
-            if (card && card.getAttribute('aria-hidden') !== 'true') {
-                openModal(card);
-            }
-        });
+  const scroll = document.getElementById('resultsGallery');
+  if (scroll) {
+    scroll.addEventListener('click', (e) => {
+      const card = e.target.closest('.result-poster[data-image]');
+      if (card && card.getAttribute('aria-hidden') !== 'true') openModal(card);
+    });
+    scroll.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        const card = e.target.closest('.result-poster[data-image]');
+        if (card && card.getAttribute('aria-hidden') !== 'true') {
+          e.preventDefault();
+          openModal(card);
+        }
+      }
+    });
+  }
 
-        scroll.addEventListener('keydown', e => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                const card = e.target.closest('.result-poster[data-name]');
-                if (card && card.getAttribute('aria-hidden') !== 'true') {
-                    e.preventDefault();
-                    openModal(card);
-                }
-            }
-        });
-    }
-
-    closeBtn.addEventListener('click', closeModal);
-    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  closeBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay.classList.contains('active')) closeModal();
+  });
 }
 
 function initHeroTextRotation() {

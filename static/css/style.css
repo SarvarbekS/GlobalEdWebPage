@@ -1487,6 +1487,78 @@ a {
     }
 }
 
+/* ── Result Poster Lightbox ─────────────────────────────── */
+.result-poster {
+  cursor: pointer;
+}
+
+.result-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  background: rgba(8, 24, 40, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+  padding: 24px;
+}
+
+.result-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.result-modal-inner {
+  position: relative;
+  max-width: min(90vw, 820px);
+  max-height: 88vh;
+  transform: scale(0.94);
+  transition: transform 0.35s ease;
+}
+
+.result-modal-overlay.active .result-modal-inner {
+  transform: scale(1);
+}
+
+.result-modal-image {
+  width: 100%;
+  height: 100%;
+  max-height: 88vh;
+  object-fit: contain;
+  border-radius: 20px;
+  box-shadow: 0 30px 70px rgba(18, 52, 77, 0.35);
+  display: block;
+}
+
+.result-modal-close {
+  position: absolute;
+  top: -44px;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--primary-dark);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 24px rgba(18, 52, 77, 0.2);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.result-modal-close:hover {
+  transform: scale(1.08);
+  background: #fff;
+}
 
 /* â”€â”€â”€ Countries Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .countries-section {
