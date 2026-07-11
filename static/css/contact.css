@@ -652,3 +652,103 @@
     }
     .contact-hero { padding: 36px 20px; border-radius: 28px; }
 }
+
+.consultation-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0 24px;
+}
+
+.consultation-slot-btn {
+  min-width: 84px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid var(--card-blue-border);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--primary-dark);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+
+.consultation-slot-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: rgba(235, 247, 255, 0.95);
+}
+
+.consultation-slot-btn.is-selected {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  border-color: transparent;
+}
+
+.consultation-slot-btn.is-booked {
+  background: rgba(22, 50, 74, 0.06);
+  color: var(--muted);
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+.consultation-date {
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin-bottom: 6px;
+}
+
+.consultation-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  background: rgba(8, 24, 40, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  padding: 24px;
+}
+
+.consultation-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.consultation-modal {
+  position: relative;
+  max-width: 400px;
+  width: 100%;
+  background: #fff;
+  border-radius: 24px;
+  padding: 32px 28px;
+  text-align: center;
+  box-shadow: 0 30px 70px rgba(18, 52, 77, 0.3);
+}
+
+.consultation-modal-icon {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+}
+
+.consultation-modal h3 {
+  color: var(--primary-dark);
+  margin-bottom: 10px;
+}
+
+.consultation-modal p {
+  color: var(--muted);
+}
+
+.consultation-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  border: none;
+  background: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: var(--muted);
+}

@@ -381,6 +381,47 @@
             </div>
         </section>
 
+        <section class="section-card consultation-section" id="consultation">
+  <div class="form-card-head">
+    <p class="section-tag">Free Consultation</p>
+    <h2>Book a free consultation for tomorrow</h2>
+    <p class="form-head-sub">Available slots: 9:00 AM – 5:00 PM (Uzbekistan time, UTC+5). Choose an open time below.</p>
+  </div>
+
+  <div class="consultation-date" id="consultationDate"></div>
+
+  <div class="consultation-slots" id="consultationSlots">
+    <p class="consultation-loading">Loading available times...</p>
+  </div>
+
+  <form class="contact-form consultation-form" id="consultationForm">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="consultEmail">Email Address <span class="required">*</span></label>
+        <input type="email" id="consultEmail" name="email" placeholder="you@email.com" required>
+      </div>
+      <div class="form-group">
+        <label for="consultPhone">Phone Number <span class="required">*</span></label>
+        <input type="text" id="consultPhone" name="phone" placeholder="+998 90 000 00 00" required>
+      </div>
+    </div>
+    <input type="hidden" id="consultSelectedSlot" name="time_slot" value="">
+    <button type="submit" class="form-submit-btn" id="consultSubmitBtn" disabled>
+      <span>Book Free Consultation</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </form>
+</section>
+
+<div class="consultation-modal-overlay" id="consultationModal" aria-hidden="true">
+  <div class="consultation-modal">
+    <button class="consultation-modal-close" id="consultationModalClose" aria-label="Close">&times;</button>
+    <div class="consultation-modal-icon" id="consultationModalIcon"></div>
+    <h3 id="consultationModalTitle"></h3>
+    <p id="consultationModalText"></p>
+  </div>
+</div>
+
         <section class="contact-card contact-map-wrap">
             <div class="map-header">
                 <p class="section-tag">Find Us</p>
@@ -850,6 +891,110 @@ function initEventModal() {
     });
 }
 
+function initConsultationBooking() {
+  const slotsWrap = document.getElementById('consultationSlots');
+  const dateWrap = document.getElementById('consultationDate');
+  const form = document.getElementById('consultationForm');
+  const submitBtn = document.getElementById('consultSubmitBtn');
+  const selectedSlotInput = document.getElementById('consultSelectedSlot');
+  const modal = document.getElementById('consultationModal');
+  const modalClose = document.getElementById('consultationModalClose');
+  const modalTitle = document.getElementById('consultationModalTitle');
+  const modalText = document.getElementById('consultationModalText');
+  const modalIcon = document.getElementById('consultationModalIcon');
+  if (!slotsWrap || !form) return;
+
+  const allSlots = [];
+  for (let h = 9; h < 17; h++) allSlots.push(`${String(h).padStart(2, '0')}:00`);
+
+  function showModal(title, text, isError) {
+    modalTitle.textContent = title;
+    modalText.textContent = text;
+    modalIcon.textContent = isError ? '⚠️' : '✅';
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+  function closeModal() {
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+  modalClose.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+  function renderSlots(bookedSlots, dateStr) {
+    dateWrap.textContent = `Consultation date: ${dateStr}`;
+    slotsWrap.innerHTML = '';
+    allSlots.forEach((slot) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'consultation-slot-btn';
+      btn.textContent = slot;
+      if (bookedSlots.includes(slot)) {
+        btn.classList.add('is-booked');
+        btn.disabled = true;
+      } else {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.consultation-slot-btn').forEach((b) => b.classList.remove('is-selected'));
+          btn.classList.add('is-selected');
+          selectedSlotInput.value = slot;
+          submitBtn.disabled = false;
+        });
+      }
+      slotsWrap.appendChild(btn);
+    });
+  }
+
+  function loadSlots() {
+    fetch('/api/consultation-slots/')
+      .then((res) => res.json())
+      .then((data) => renderSlots(data.booked, data.date))
+      .catch(() => {
+        slotsWrap.innerHTML = '<p class="consultation-loading">Unable to load available times.</p>';
+      });
+  }
+  loadSlots();
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('consultEmail').value.trim();
+    const phone = document.getElementById('consultPhone').value.trim();
+    const timeSlot = selectedSlotInput.value;
+    if (!email || !phone || !timeSlot) return;
+
+    submitBtn.disabled = true;
+    fetch('/api/book-consultation/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || '',
+      },
+      body: JSON.stringify({ email, phone, time_slot: timeSlot }),
+    })
+      .then((res) => res.json().then((data) => ({ status: res.status, data })))
+      .then(({ status, data }) => {
+        if (status === 200) {
+          showModal('Consultation booked!', `Your free consultation is confirmed for ${timeSlot} (UZ time) tomorrow. Our team will reach out.`, false);
+          form.reset();
+          selectedSlotInput.value = '';
+          loadSlots();
+        } else if (data.error === 'duplicate') {
+          showModal('Already booked', 'A free consultation was already booked with this email or phone number for tomorrow.', true);
+          submitBtn.disabled = false;
+        } else if (data.error === 'slot_taken') {
+          showModal('Slot no longer available', 'This time slot was just booked by someone else. Please pick another.', true);
+          loadSlots();
+        } else {
+          showModal('Something went wrong', 'Please try again in a moment.', true);
+          submitBtn.disabled = false;
+        }
+      })
+      .catch(() => {
+        showModal('Something went wrong', 'Please check your connection and try again.', true);
+        submitBtn.disabled = false;
+      });
+  });
+}
+
 window.addEventListener('load', () => {
     initInfiniteResultsScroll();
     initResultsModal();
@@ -858,6 +1003,7 @@ window.addEventListener('load', () => {
     initOpportunitiesWheel();
     initNewsModal && initNewsModal();
     initEventModal && initEventModal();
+    initConsultationBooking();
 });
     </script>
 </body>

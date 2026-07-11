@@ -7,6 +7,8 @@ from django.core.files.base import ContentFile
 from PIL import Image
 from pdf2image import convert_from_bytes
 from pdf2image.exceptions import PDFInfoNotInstalledError
+from django.utils import timezone
+import datetime
 
 
 class ResultPoster(models.Model):
@@ -308,3 +310,17 @@ class Certification(models.Model):
         self.preview_image.save(preview_name, ContentFile(output.read()), save=False)
 
         super().save(update_fields=["preview_image"])
+
+
+class ConsultationBooking(models.Model):
+    email = models.EmailField()
+    phone = models.CharField(max_length=32)
+    booking_date = models.DateField()
+    time_slot = models.CharField(max_length=5)  # e.g. "09:00"
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [("booking_date", "time_slot")]
+
+    def __str__(self):
+        return f"{self.booking_date} {self.time_slot} - {self.email}"
